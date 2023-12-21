@@ -1,16 +1,29 @@
 import * as React from "react";
-import { Grid, Card, CardMedia, CardContent, Typography, Container, ImageList, ImageListItem, ImageListItemBar, IconButton, Box} from '@mui/material';
-
+import { useState } from 'react';
+import { Grid, Card, CardMedia, CardContent, Typography, Container, ImageList, ImageListItem, ImageListItemBar, IconButton, Box, Modal} from '@mui/material';
 
 const Result = () => {
-    var showResults = itemData.map((item, index) => {
+    const [selectedImage, setSelectedImage] = useState(null);
+
+    const handleImageClick = (image) => {
+        setSelectedImage(image);
+    };
+
+    const handleCloseModal = () => {
+        setSelectedImage(null);
+    };
+
+    const showResults = itemData.map((item, index) => {
         return (
-            <Box 
+            <Box
+                key={index}
                 sx={{
-                    boder: "4px solid",
+                    border: "4px solid",
                     borderColor: "white",
-                    pointerEvents: "all"
+                    pointerEvents: "all",
+                    cursor: "pointer",
                 }}
+                onClick={() => handleImageClick(item.img)}
             >
                 <ImageListItem>
                     <img
@@ -18,21 +31,60 @@ const Result = () => {
                         src={`${item.img}?w=248&fit=crop&auto=format`}
                         alt={item.title}
                         loading="lazy"
+                        style={{
+                          objectFit: 'cover',
+                          maxWidth: '100%',
+                          maxHeight: '100%',
+                        }}
                     />
                     <ImageListItemBar
                         title={item.title}
-                        position="below"
+                        style={{
+                          opacity: "1",
+                          color: "white",
+                          fontSize: '100px'
+                        }}
                     />
                 </ImageListItem>
-    
+                
+                
             </Box>
-        )
+        );
     });
+
     return (
         <Container style={{ padding: "20px" }} maxWidth={true}>
-            <ImageList cols={7} rowHeight={150}>
+            <ImageList cols={6} rowHeight={200} sx={{ overflow: "hidden"}}>
                 {showResults}
             </ImageList>
+
+            {/* Modal hiển thị ảnh phóng to */}
+            <Modal
+                open={selectedImage !== null}
+                onClose={handleCloseModal}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <div>
+                    <Box
+                        sx={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                        }}
+                    >
+                        <Typography variant="h6" style={{ position: 'absolute', top: '0', left: '0', color: 'white', padding: '10px' }}>
+                            {itemData.find(item => item.img === selectedImage)?.title}
+                        </Typography>
+                        <img
+                            src={selectedImage}
+                            alt="Selected Image"
+                            style={{ maxWidth: '100%', maxHeight: '100%' }}
+                        />
+                    </Box>
+                </div>
+            </Modal>
         </Container>
     );
 };
@@ -90,6 +142,16 @@ const itemData = [
       img: 'https://images.unsplash.com/photo-1567306301408-9b74779a11af',
       title: 'Tomato basil',
       author: '@shelleypauls',
+    },
+    {
+      img: 'https://images.unsplash.com/photo-1471357674240-e1a485acb3e1',
+      title: 'Sea star',
+      author: '@peterlaster',
+    },
+    {
+      img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
+      title: 'Bike',
+      author: '@southside_customs',
     },
     {
       img: 'https://images.unsplash.com/photo-1471357674240-e1a485acb3e1',
